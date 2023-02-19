@@ -1,0 +1,47 @@
+{% include 'base.html' %}
+
+<div class="d-flex justify-content-center">
+  <div class="list-group">
+    {% if notes %}
+      {% for item in notes %}
+        <div id="card-container-{{item.id}}" class="card mb-3 mx-4 mt-2 col-12 col-md-6 col-lg-12">
+          <div class="card-body">
+            <div><h5 class="card-title d-inline mr-2">{{ item.title }}</h5> {% if item.expired %} <strong class='d-inline text-danger'>Expired!</strong> {% endif %} 
+              <button id="mode-toggle-btn-{{item.id}}" type="button" onclick="toggleMode({{item.id}})" class="btn btn-link btn-transparent d-inline">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon moon-svg" viewBox="0 0 16 16">
+                  <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z"/>
+                </svg>
+                
+              </button>
+            </div>
+            <p class="card-text">{{ item.content }}</p>
+            <ul class="list-unstyled mb-0">
+              <li><strong>Due date:</strong> {{ item.due_date }}</li>
+              <li><strong>Created date:</strong> {{ item.created_date }}</li>
+            </ul>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+              <a href="{% url 'delete-note' item.id %}"><button type="button" class="btn btn-danger me-md-2">Delete</button></a>
+              <a href="{% url 'update-note' item.id %}"><button type="button" class="btn btn-primary">Edit</button></a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="text-center mx-auto">
+        <h1>You don't have any notes created yet!</h1>
+        <a href="{% url 'create-note' %}"><button type="button" class="btn btn-dark">Create note</button></a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  function toggleMode(itemId) {
+    const cardContainer = document.getElementById(`card-container-${itemId}`); // gets the card-container element with an ID of specific rendered component
+    const modeToggleBtn = document.getElementById(`mode-toggle-btn-${itemId}`); // gets the mode-toggle-btn with an ID of specific rendered component
+    const svg = modeToggleBtn.querySelector('svg'); // grabs svg element inside cardContainer element
+    cardContainer.classList.toggle('dark-mode'); // ”) toggle the dark-mode class on the cardContainer element. If the class is present it will be removed. If it is not present, it will be added
+    svg.classList.toggle('dark-mode', cardContainer.classList.contains('dark-mode')); // toggle the “dark-mode” class on the svg element inside the “modeToggleBtn” element. The second parameter is a Boolean value that specified whether to add or remove the class.
+                                                                                      // If “cardContainer” has the “dark-mode” class, it will add the class to “svg”. Otherwise, it will remove the class.
+  }
+</script>
